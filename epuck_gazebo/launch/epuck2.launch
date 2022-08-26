@@ -1,0 +1,24 @@
+<launch>
+  <arg name="name" default="robot_1" />
+  <arg name="id" default="1" />
+  <arg name="init_pose" default="-x 0 -y 0 -z 0" />
+  <arg name="node_start_delay" default="5.0" />
+
+  <!--<param name="robot_description" textfile="$(find epuck_description)/robots/epuck2.URDF" />-->  
+  
+  <!--<include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/empty.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="true"/>
+  </include>-->
+
+  <param name="tf_prefix" value="$(arg name)" />
+
+  <!--<remap from = "scan" to = "$(arg name)/scan" />-->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find epuck_description)/robots/epuck2.URDF -model $(arg name) -urdf $(arg init_pose)" />
+  
+  <node name="spawn_marker_on_robot" pkg="grobot_utilities" type="spawn_marker_on_robot_$(arg id).py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
+
+</launch>
+
