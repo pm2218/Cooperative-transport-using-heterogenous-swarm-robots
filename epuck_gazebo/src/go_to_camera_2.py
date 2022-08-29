@@ -30,12 +30,15 @@ desired_position_ = Point()
 # desired_position_.z = 0
 robot_name = rospy.get_param('name')
 regions_ = None
-state_desc_ = ['Go to point', 'wall following']
+state_desc_ = ['Go to point', 'circumnavigate obstacle', 'go to closest point']
 state_ = 0
+circumnavigate_starting_point_ = Point()
+circumnavigate_closest_point_ = Point()
 count_state_time_ = 0 # seconds the robot is in a state
 count_loop_ = 0
 # 0 - go to point
-# 1 - wall following
+# 1 - circumnavigate
+# 2 - go to closest point
 
 # callbacks
 def clbk_cam(msg):
@@ -74,7 +77,6 @@ def change_state(state):
     global count_state_time_
     count_state_time_ = 0
     state_ = state
-    print(robot_name)
     log = "state changed: %s" % state_desc_[state]
     rospy.loginfo(log)
     if state_ == 0:
@@ -83,20 +85,13 @@ def change_state(state):
     if state_ == 1:
         resp = srv_client_go_to_point_(False)
         resp = srv_client_wall_follower_(True)
+    if state_ == 2:
+        resp = srv_client_go_to_point_(False)
+        resp = srv_client_wall_follower_(True)
 
-def distance_to_line(p0):
-    # p0 is the current position
-    # p1 and p2 points define the line
-    global initial_position_, desired_position_
-    p1 = initial_position_
-    p2 = desired_position_
-    # here goes the equation
-    up_eq = math.fabs((p2.y - p1.y) * p0.x - (p2.x - p1.x) * p0.y + (p2.x * p1.y) - (p2.y * p1.x))
-    lo_eq = math.sqrt(pow(p2.y - p1.y, 2) + pow(p2.x - p1.x, 2))
-    distance = up_eq / lo_eq
-    
-    return distance
-    
+def calc_dist_points(point1, point2):
+    dist = math.sqrt((point1.y - point2.y)**2 + (point1.x - point2.x)**2)
+    return dist
 
 def normalize_angle(angle):
     if(math.fabs(angle) > math.pi):
@@ -106,10 +101,11 @@ def normalize_angle(angle):
 def main():
     global regions_, position_, desired_position_, state_, yaw_, yaw_error_allowed_
     global srv_client_go_to_point_, srv_client_wall_follower_
-    global count_state_time_, count_loop_
+    global circumnavigate_closest_point_, circumnavigate_starting_point_
+    global count_loop_, count_state_time_
     
-    rospy.init_node('go_to_camera')
-
+    rospy.init_node('bug1')
+    
     scan_topic = robot_name + '/scan'
     odom_topic = robot_name + '/odom_diffdrive'
     cam_topic = robot_name + '/camera_pose'
@@ -117,7 +113,7 @@ def main():
     sub_laser = rospy.Subscriber(scan_topic, LaserScan, clbk_laser)
     sub_odom = rospy.Subscriber(odom_topic, Odometry, clbk_odom)
     sub_cam = rospy.Subscriber(cam_topic, Point, clbk_cam)
-
+    
     rospy.wait_for_service(robot_name + '/go_to_point_switch')
     rospy.wait_for_service(robot_name + '/wall_follower_switch')
     rospy.wait_for_service('/gazebo/set_model_state')
@@ -136,28 +132,40 @@ def main():
     # initialize going to the point
     change_state(0)
     
-    rate = rospy.Rate(0.5)
+    rate_hz = 20
+    rate = rospy.Rate(rate_hz)
     while not rospy.is_shutdown():
         if regions_ == None:
             continue
         
-        distance_position_to_line = distance_to_line(position_)
         error = math.sqrt(pow(desired_position_.y - position_.y, 2) + pow(desired_position_.x - position_.x, 2))
         
         if state_ == 0:
             if (regions_['front'] < 0.15 or regions_['fright'] < 0.15 or regions_['fleft'] < 0.15) and error > 0.3:
+                circumnavigate_closest_point_ = position_
+                circumnavigate_starting_point_ = position_
                 change_state(1)
         
         elif state_ == 1:
-            if (count_state_time_ > 5 and distance_position_to_line < 0.01) and (regions_['front'] > 0.15 or regions_['fright'] > 0.15 or regions_['fleft'] > 0.15):
+            # if current position is closer to the goal than the previous closest_position, assign current position to closest_point
+            if calc_dist_points(position_, desired_position_) < calc_dist_points(circumnavigate_closest_point_, desired_position_):
+                circumnavigate_closest_point_ = position_
+                
+            # compare only after 5 seconds - need some time to get out of starting_point
+            # if robot reaches (is close to) starting point
+            if count_state_time_ > 1 and calc_dist_points(position_, circumnavigate_starting_point_) < 0.2:
+                change_state(2)
+        
+        elif state_ == 2:
+            # if robot reaches (is close to) closest point
+            if calc_dist_points(position_, circumnavigate_closest_point_) < 0.2:
                 change_state(0)
                 
         count_loop_ = count_loop_ + 1
-        if count_loop_ == 20:
+        if count_loop_ == 5:
             count_state_time_ = count_state_time_ + 1
             count_loop_ = 0
             
-        # rospy.loginfo("distance to line: [%.2f], position: [%.2f, %.2f]", distance_to_line(position_), position_.x, position_.y)
         rate.sleep()
 
 if __name__ == "__main__":

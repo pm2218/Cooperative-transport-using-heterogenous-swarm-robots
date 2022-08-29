@@ -36,12 +36,12 @@ def main():
     link_attacher_client = rospy.ServiceProxy('/link_attacher_node/attach', Attach)
 
     # Initialize model names
-    robot_name = "robot_4"
+    robot_name = "cylinder_object"
     marker_name = robot_name + '_marker'
 
     # Compute marker pose based on current robot pose
     marker_pose = get_model_pose(robot_name)
-    marker_pose.position.x -= 0.00001
+    # marker_pose.position.x -= 0.00001
     marker_pose.position.z = 0.055
     marker_pose.orientation = Quaternion(*quaternion_from_euler(0, 0, pi))
 
@@ -52,7 +52,7 @@ def main():
     <sdf version="1.6">
       <world name="default">
         <include>
-          <uri>model://aruco_marker</uri>
+          <uri>model://marker_5</uri>
         </include>
       </world>
     </sdf>"""
@@ -62,7 +62,7 @@ def main():
     # Spawn and attach marker to the robot
     pause_physics_client()
     spawn_sdf_model_client(spawn_request)
-    link_attacher_client(robot_name, 'base_link', marker_name, 'link')
+    link_attacher_client(robot_name, 'cylinder_link', marker_name, 'marker')
     unpause_physics_client()
 
 

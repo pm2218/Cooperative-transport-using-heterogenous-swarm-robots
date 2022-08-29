@@ -27,8 +27,8 @@
         type="camera_pose.py" 
         name="camera_pose" />
     <node pkg="epuck_gazebo" 
-        type="go_to_camera.py" 
+        type="go_to_camera_2.py" 
         name="go_to_camera" 
         output="screen" 
-        launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+        launch-prefix="bash -c 'sleep $(arg id); $0 $@' "/>
 </launch>
