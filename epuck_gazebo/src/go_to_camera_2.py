@@ -158,7 +158,11 @@ def main():
         
         elif state_ == 2:
             # if robot reaches (is close to) closest point
+<<<<<<< HEAD
             if calc_dist_points(position_, circumnavigate_closest_point_) < 0.1:
+=======
+            if calc_dist_points(position_, circumnavigate_closest_point_) < 0.2:
+>>>>>>> a96f332050ba18d824024afb452556bbcc6481b5
                 change_state(0)
                 
         count_loop_ = count_loop_ + 1

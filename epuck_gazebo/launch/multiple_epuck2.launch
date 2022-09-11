@@ -94,5 +94,8 @@
 
   <node name="spawn_marker_on_object" pkg="grobot_utilities" type="spawn_marker_on_object.py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
 
+<<<<<<< HEAD
   <node name="object_occlusion" pkg="epuck_gazebo" type="object_occlusion.py" output="screen" />
+=======
+>>>>>>> a96f332050ba18d824024afb452556bbcc6481b5
 </launch>

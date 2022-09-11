@@ -110,15 +110,24 @@
       <pose>0 0 0.025 0 -0 0</pose>
       <link name='cylinder_link'>
         <inertial>
+<<<<<<< HEAD
           <mass>0.025</mass>
           <!--<inertia>
+=======
+          <mass>0.05</mass>
+          <inertia>
+>>>>>>> a96f332050ba18d824024afb452556bbcc6481b5
             <ixx>0.145833</ixx>
             <ixy>0</ixy>
             <ixz>0</ixz>
             <iyy>0.145833</iyy>
             <iyz>0</iyz>
             <izz>0.125</izz>
+<<<<<<< HEAD
           </inertia>-->
+=======
+          </inertia>
+>>>>>>> a96f332050ba18d824024afb452556bbcc6481b5
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
         <collision name='collision'>
@@ -151,7 +160,11 @@
           </geometry>
           <material>
             <script>
+<<<<<<< HEAD
               <name>Gazebo/Red</name>
+=======
+              <name>Gazebo/Green</name>
+>>>>>>> a96f332050ba18d824024afb452556bbcc6481b5
               <uri>file://media/materials/scripts/gazebo.material</uri>
             </script>
           </material>
