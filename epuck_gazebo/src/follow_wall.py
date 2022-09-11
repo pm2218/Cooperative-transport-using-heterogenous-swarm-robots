@@ -104,20 +104,20 @@ def take_action():
 
 def find_wall():
     msg = Twist()
-    msg.linear.x = 0.1
-    msg.angular.z = -0.3
+    msg.linear.x = 0.2
+    msg.angular.z = -0.5
     return msg
 
 def turn_left():
     msg = Twist()
-    msg.angular.z = 0.5
+    msg.angular.z = 0.3
     return msg
 
 def follow_the_wall():
     global regions_
     
     msg = Twist()
-    msg.linear.x = 0.1
+    msg.linear.x = 0.3
     return msg
 
 def main():
@@ -128,7 +128,7 @@ def main():
     cmd_vel_topic = robot_name + '/cmd_vel'
     scan_topic = robot_name + '/scan'
     
-    pub_ = rospy.Publisher(cmd_vel_topic, Twist, queue_size=10)
+    pub_ = rospy.Publisher(cmd_vel_topic, Twist, queue_size=1)
     
     sub = rospy.Subscriber(scan_topic, LaserScan, clbk_laser)
     

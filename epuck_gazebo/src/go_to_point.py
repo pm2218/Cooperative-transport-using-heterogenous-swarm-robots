@@ -25,7 +25,7 @@ desired_position_ = Point()
 robot_name = rospy.get_param('name')
 # parameters
 yaw_precision_ = math.pi / 90 # +/- 2 degree allowed
-dist_precision_ = 0.3
+dist_precision_ = 0.1
 
 # publishers
 pub = None
@@ -79,7 +79,7 @@ def fix_yaw(des_pos):
     
     twist_msg = Twist()
     if math.fabs(err_yaw) > yaw_precision_:
-        twist_msg.angular.z = 0.1 if err_yaw > 0 else -0.1
+        twist_msg.angular.z = 0.3 if err_yaw > 0 else -0.3
     
     pub.publish(twist_msg)
     
@@ -97,7 +97,7 @@ def go_straight_ahead(des_pos):
     if err_pos > dist_precision_:
         twist_msg = Twist()
         twist_msg.linear.x = 0.3
-        twist_msg.angular.z = 0.1 if err_yaw > 0 else -0.1
+        twist_msg.angular.z = 0.3 if err_yaw > 0 else -0.3
         pub.publish(twist_msg)
     else:
         print ('Position error: [%s]' % err_pos)
@@ -123,7 +123,7 @@ def main():
     odom_topic = robot_name + '/odom_diffdrive'
     cam_topic = robot_name + '/camera_pose'
     
-    pub = rospy.Publisher(cmd_vel_topic, Twist, queue_size=10)
+    pub = rospy.Publisher(cmd_vel_topic, Twist, queue_size=1)
     
     sub_odom = rospy.Subscriber(odom_topic, Odometry, clbk_odom)
     sub_cam = rospy.Subscriber(cam_topic, Point, clbk_cam)

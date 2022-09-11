@@ -1,0 +1,57 @@
+<launch>
+    <arg name="robot_1" default="robot_1" />
+    <arg name="robot_1_id" default="1" />
+    <arg name="robot_2" default="robot_2" />
+    <arg name="robot_2_id" default="2" />
+    <arg name="robot_3" default="robot_3" />
+    <arg name="robot_3_id" default="3" />
+    <arg name="robot_4" default="robot_4" />
+    <arg name="robot_4_id" default="4" />
+    <arg name="node_start_delay" default="5.0" />
+    <arg name="init_pose" default="-x 0 -y 0 -z 0" />
+    <arg name="initial_x1" default="1" />
+    <arg name="initial_y1" default="1" />
+    <arg name="initial_x2" default="-1" />
+    <arg name="initial_y2" default="1" />
+    <arg name="initial_x3" default="1" />
+    <arg name="initial_y3" default="-1" />
+    <arg name="initial_x4" default="-1" />
+    <arg name="initial_y4" default="-1" />
+
+  <group ns="$(arg robot_1)">
+    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+      <arg name="name" value="$(arg robot_1)"/>
+      <arg name="id" value="$(arg robot_1_id)" />
+      <arg name="initial_x" value="$(arg initial_x1)" />
+      <arg name="initial_y" value="$(arg initial_y1)" />
+    </include>
+  </group>
+  
+  <group ns="$(arg robot_2)">
+    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+      <arg name="name" value="$(arg robot_2)"/>
+      <arg name="id" value="$(arg robot_1_id)" />
+      <arg name="initial_x" value="$(arg initial_x2)" />
+      <arg name="initial_y" value="$(arg initial_y2)" />
+    </include>
+  </group>
+
+  <group ns="$(arg robot_3)">
+    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+      <arg name="name" value="$(arg robot_3)"/>
+      <arg name="id" value="$(arg robot_3_id)" />
+      <arg name="initial_x" value="$(arg initial_x3)" />
+      <arg name="initial_y" value="$(arg initial_y3)" />
+    </include>
+  </group>
+
+  <group ns="$(arg robot_4)">
+    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+      <arg name="name" value="$(arg robot_4)"/>
+      <arg name="id" value="$(arg robot_4_id)" />
+      <arg name="initial_x" value="$(arg initial_x4)" />
+      <arg name="initial_y" value="$(arg initial_y4)" />
+    </include>
+  </group>
+
+</launch>

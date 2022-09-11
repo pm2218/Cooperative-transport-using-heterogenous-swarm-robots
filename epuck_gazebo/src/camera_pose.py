@@ -35,6 +35,7 @@ def fid_tranform():
     
     # my_fid_transforms = camera_pose + my_fid_transforms
     camera_pose.x = camera_pose.x - 0.2*(id - 1)
+    camera_pose.y = camera_pose.y - 0.2*(id - 1)
     camera_pose.z = 0
     pub_fid.publish(camera_pose)
     # print(camera_pose)
@@ -58,7 +59,7 @@ def main():
     rospy.init_node('marker_transform')
 
     sub_fid = rospy.Subscriber('/fiducial_transforms', FiducialTransformArray, clbk_fid)
-    pub_fid = rospy.Publisher(robot_name + '/camera_pose', Point, queue_size=10)
+    pub_fid = rospy.Publisher(robot_name + '/camera_pose', Point, queue_size=20)
     
     rospy.spin()
 

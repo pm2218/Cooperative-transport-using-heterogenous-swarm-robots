@@ -10,12 +10,12 @@
     <arg name="node_start_delay" default="5.0" />
     <arg name="init_pose" default="-x 0 -y 0 -z 0" />
     <arg name="initial_x1" default="1" />
-    <arg name="initial_y1" default="0" />
+    <arg name="initial_y1" default="1" />
     <arg name="initial_x2" default="-1" />
-    <arg name="initial_y2" default="0" />
-    <arg name="initial_x3" default="0" />
-    <arg name="initial_y3" default="1" />
-    <arg name="initial_x4" default="0" />
+    <arg name="initial_y2" default="1" />
+    <arg name="initial_x3" default="1" />
+    <arg name="initial_y3" default="-1" />
+    <arg name="initial_x4" default="-1" />
     <arg name="initial_y4" default="-1" />
   <include
     file="$(find epuck_gazebo)/launch/world.launch" />
@@ -25,12 +25,12 @@
       <arg name="id" value="$(arg robot_1_id)" />
       <arg name="init_pose" value="-x $(arg initial_x1) -y $(arg initial_y1) -z 0" />
     </include>
-    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+    <!--<include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
       <arg name="name" value="$(arg robot_1)"/>
       <arg name="id" value="$(arg robot_1_id)" />
       <arg name="initial_x" value="$(arg initial_x1)" />
       <arg name="initial_y" value="$(arg initial_y1)" />
-    </include>
+    </include>-->
   </group>
   
   <group ns="$(arg robot_2)">
@@ -40,27 +40,27 @@
       <param name="tf_prefix" value="$(arg robot_2)" />
       <arg name="init_pose" value="-x $(arg initial_x2) -y $(arg initial_y2) -z 0" />
     </include>
-    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+    <!--<include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
       <arg name="name" value="$(arg robot_2)"/>
       <arg name="id" value="$(arg robot_1_id)" />
       <arg name="initial_x" value="$(arg initial_x2)" />
       <arg name="initial_y" value="$(arg initial_y2)" />
-    </include>
+    </include>-->
   </group>
 
-  <!--<group ns="$(arg robot_3)">
+  <group ns="$(arg robot_3)">
     <include file="$(find epuck_gazebo)/launch/epuck2.launch">
       <arg name="name" value="$(arg robot_3)"/>
       <arg name="id" value="$(arg robot_3_id)" />
       <param name="tf_prefix" value="$(arg robot_3)" />
       <arg name="init_pose" value="-x $(arg initial_x3) -y $(arg initial_y3) -z 0" />
     </include>
-    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+    <!--<include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
       <arg name="name" value="$(arg robot_3)"/>
       <arg name="id" value="$(arg robot_3_id)" />
       <arg name="initial_x" value="$(arg initial_x3)" />
       <arg name="initial_y" value="$(arg initial_y3)" />
-    </include>
+    </include>-->
   </group>
 
   <group ns="$(arg robot_4)">
@@ -70,13 +70,13 @@
       <param name="tf_prefix" value="$(arg robot_4)" />
       <arg name="init_pose" value="-x $(arg initial_x4) -y $(arg initial_y4) -z 0" />
     </include>
-    <include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
+    <!--<include file="$(find epuck_gazebo)/launch/go_to_camera.launch">
       <arg name="name" value="$(arg robot_4)"/>
       <arg name="id" value="$(arg robot_4_id)" />
       <arg name="initial_x" value="$(arg initial_x4)" />
       <arg name="initial_y" value="$(arg initial_y4)" />
-    </include>
-  </group>-->
+    </include>-->
+  </group>
   
   
 
@@ -91,4 +91,8 @@
     <remap from="/camera/compressed" to="/camera/color/image_raw/compressed" />
     <remap from="/camera_info" to="/camera/color/camera_info" />
   </node>
+
+  <node name="spawn_marker_on_object" pkg="grobot_utilities" type="spawn_marker_on_object.py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
+
+  <node name="object_occlusion" pkg="epuck_gazebo" type="object_occlusion.py" output="screen" />
 </launch>

@@ -17,7 +17,7 @@
 
   <!--<remap from = "scan" to = "$(arg name)/scan" />-->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find epuck_description)/robots/epuck2.URDF -model $(arg name) -urdf $(arg init_pose)" />
-  
+  <param name="id" value="$(arg id)" />
   <node name="spawn_marker_on_robot" pkg="grobot_utilities" type="spawn_marker_on_robot_$(arg id).py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
 
 </launch>
